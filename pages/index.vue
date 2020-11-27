@@ -179,7 +179,6 @@
               );
             };
             img.src = imgData;
-            console.log(imgData);
 
             // Wait a bit
             setTimeout(() => {
@@ -194,7 +193,6 @@
         } catch (error) {
           // Do nothing
           this.loader = false;
-          console.log(error);
         } finally {
           // this.loader = false;
         }
