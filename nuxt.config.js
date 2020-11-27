@@ -45,11 +45,9 @@ export default {
   manifest: {
     name: 'RCCG Flier Generator',
     short_name: 'RCCG Fliers',
-    description: 'RCCG Flier Generator',
-    background_color: '#f8f8fb',
-    theme_color: '#005EFF',
+    description: 'Powered by RCCG, Lagos Province 55',
+    theme_color: '#7145c2',
     lang: 'en',
-    start_url: '/',
   },
 
   generate: {
