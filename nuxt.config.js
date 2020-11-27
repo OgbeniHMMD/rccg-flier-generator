@@ -41,4 +41,18 @@ export default {
 
   // Build Configuration (https://go.nuxtjs.dev/config-build)
   build: {},
+
+  manifest: {
+    name: 'RCCG Flier Generator',
+    short_name: 'RCCG Fliers',
+    description: 'RCCG Flier Generator',
+    background_color: '#f8f8fb',
+    theme_color: '#005EFF',
+    lang: 'en',
+    start_url: '/',
+  },
+
+  generate: {
+    fallback: true,
+  },
 };
