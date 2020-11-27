@@ -5,38 +5,69 @@
     <div
       class="container opacity-100 flex flex-col justify-around my-auto py-4 min-h-screen align-center"
     >
-      <img src="/icon.png" width="100" class="mx-auto mb-20" />
+      <div>
+        <img src="/icon.png" width="100" class="mx-auto mb-8" />
 
-      <div class="hidden">
-        <canvas ref="canvas">Your browser does not support Canvas.</canvas>
+        <div class="hidden">
+          <canvas ref="canvas">Your browser does not support Canvas.</canvas>
+        </div>
       </div>
 
-      <div v-if="loader" class="text-center text-purple-600 pt-20 text-2xl">
+      <div
+        v-if="loader"
+        class="text-center text-purple-600 pt-20 text-2xlcursor-wait"
+      >
         Please, Wait. . .
       </div>
 
-      <button
-        v-if="!downloadLink"
-        class="w-4/5 h-12 px-6 mx-auto border border-purple-800 text-purple-800 text-xl font-bold transition-colors duration-150 bg-purple-100 rounded-lg focus:shadow-outline hover:bg-purple-200"
-        @click="drawAvatar"
-      >
-        Upload your photo
-      </button>
+      <div v-else-if="!downloadLink" class="text-center">
+        <label for="file">
+          <div>
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              viewBox="0 0 24 24"
+              class="cursor-pointer mx-auto mb-4"
+              width="175"
+              height="175"
+            >
+              <path fill="none" d="M0 0h24v24H0z" />
+              <path
+                d="M9 3h6l2 2h4a1 1 0 0 1 1 1v14a1 1 0 0 1-1 1H3a1 1 0 0 1-1-1V6a1 1 0 0 1 1-1h4l2-2zm3 16a6 6 0 1 0 0-12 6 6 0 0 0 0 12zm0-2a4 4 0 1 1 0-8 4 4 0 0 1 0 8z"
+                fill="#7145c2"
+              />
+            </svg>
+          </div>
+          <a
+            class="block w-4/5 py-3 mx-auto border border-purple-800 text-purple-800 text-xl font-bold transition-colors duration-150 bg-purple-100 rounded-lg focus:shadow-outline hover:bg-purple-200 cursor-pointer"
+          >
+            Upload your photo
+          </a>
+        </label>
 
-      <div v-if="downloadLink" class="text-purple-500 text-center">
-        <img :src="downloadLink" width="250" class="mx-auto mb-8" />
+        <input
+          id="file"
+          ref="uploadedPhoto"
+          type="file"
+          class="hidden"
+          accept="image/png, image/jpeg, image/jpg"
+          @change="drawAvatar()"
+        />
+      </div>
+
+      <div v-else-if="downloadLink" class="text-purple-500 text-center">
+        <img :src="downloadLink" width="250" class="mx-auto mb-8 rounded" />
 
         <a
           :href="downloadLink"
-          download="flier.png"
-          class="w-4/5 block py-4 mx-auto text-purple-100 text-xl font-bold transition-colors duration-150 bg-purple-700 rounded-lg focus:shadow-outline hover:bg-purple-800"
+          download="flier.jpg"
+          class="w-4/5 block py-4 mx-auto text-purple-100 text-xl font-bold transition-colors duration-150 bg-purple-700 rounded-lg focus:shadow-outline hover:bg-purple-800 cursor-pointer"
         >
           Download
         </a>
 
         <div class="mt-4">
           <a
-            class="w-1/3 block py-3 mx-auto border border-purple-800 text-purple-700 font-bold transition-colors duration-150 bg-purple-100 rounded-lg focus:shadow-outline hover:bg-purple-200"
+            class="w-1/3 block py-3 mx-auto border border-purple-800 text-purple-700 font-bold transition-colors duration-150 bg-purple-100 rounded-lg focus:shadow-outline hover:bg-purple-200 cursor-pointer"
             @click="reset"
           >
             Reset
@@ -58,10 +89,12 @@
         loader: false,
         downloadLink: null,
 
+        uploadedPhoto: null,
+
         ctx: null,
         canvas: null,
         background: {
-          src: '/img/rccg-1024.png',
+          src: '/img/rccg-1024.jpg',
           width: 1024,
           height: 1024,
         },
@@ -99,10 +132,15 @@
 
       drawAvatar() {
         try {
-          this.loader = true;
-          this.downloadLink = null;
+          if (this.$refs.uploadedPhoto.files) {
+            // Convert photo to base64 format (i.e data url)
+            const imgData = URL.createObjectURL(
+              this.$refs.uploadedPhoto.files[0]
+            );
 
-          if (this.canvas.getContext) {
+            this.loader = true;
+            this.downloadLink = null;
+
             // Draw User avatar on canvas  on 'image load'
             const img = new Image();
             img.onload = () => {
@@ -127,17 +165,25 @@
                 this.avatar.width
               );
             };
-            img.src = '/img/avatar.jpg';
+            img.src = imgData;
+            console.log(imgData);
 
-            //
-            this.downloadLink = this.canvas
-              .toDataURL('image/png')
-              .replace('image/png', 'image/octet-stream');
+            // Wait a bit
+            setTimeout(() => {
+              this.downloadLink = this.canvas
+                .toDataURL('image/png')
+                .replace('image/png', 'image/octet-stream');
+
+              // Disable Loader
+              this.loader = false;
+            }, 3000);
           }
         } catch (error) {
           // Do nothing
-        } finally {
           this.loader = false;
+          console.log(error);
+        } finally {
+          // this.loader = false;
         }
       },
 
