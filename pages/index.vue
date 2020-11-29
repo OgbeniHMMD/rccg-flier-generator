@@ -68,14 +68,18 @@
 
     <div v-else-if="downloadLink" class="text-purple-500 text-center">
       <div class="flex justify-center mb-4">
-        <a :href="downloadLink" class="border border-purple-300 rounded p-1">
+        <a
+          :href="downloadLink"
+          :download="downloadFileName"
+          class="border border-purple-300 rounded p-1"
+        >
           <img :src="downloadLink" width="250" class="rounded" />
         </a>
       </div>
 
       <a
         :href="downloadLink"
-        download="flier.jpg"
+        :download="downloadFileName"
         class="w-4/5 block py-3 mx-auto text-purple-100 font-bold transition-colors duration-150 bg-purple-700 rounded-lg focus:shadow-outline hover:bg-purple-800 cursor-pointer"
       >
         Download
@@ -100,9 +104,10 @@
     data() {
       return {
         loader: false,
-        downloadLink: null,
 
         uploadedPhoto: null,
+        downloadLink: null,
+        downloadFileName: 'rccglp55yaya.jpg',
 
         ctx: null,
         canvas: null,
@@ -154,10 +159,14 @@
             this.loader = true;
             this.downloadLink = null;
 
-            // Draw User avatar on canvas  on 'image load'
+            /**
+             *  Draw User avatar on canvas  on 'image load'
+             */
             const img = new Image();
             img.onload = () => {
-              // define a path
+              /**
+               * Draw the flier template
+               */
               this.ctx.beginPath();
               this.ctx.arc(
                 this.avatar.top + this.avatar.width / 2,
@@ -168,7 +177,9 @@
               );
               this.ctx.closePath();
 
-              // clip new drawings within this path
+              /**
+               * Clip user's photo within this path
+               */
               this.ctx.clip();
               this.ctx.drawImage(
                 img,
